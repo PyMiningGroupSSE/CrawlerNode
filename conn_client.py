@@ -26,7 +26,7 @@ __BUFF_SIZE__ = 4096
 
 
 class ClientConnection:
-    __pysocket__ = None
+    __msgsock__ = None
     __client_id__ = None
 
     __flag_connected__ = False
@@ -34,8 +34,8 @@ class ClientConnection:
     # init the class and establish the socket connection
     def __init__(self, client_id, address, port):
         self.__client_id__ = client_id
-        self.__pysocket__ = MsgSocket()
-        while self.__pysocket__.connect_ex(address, port) != 0:
+        self.__msgsock__ = MsgSocket()
+        while self.__msgsock__.connect_ex(address, port) != 0:
             print("server offline")
             time.sleep(3)
 
@@ -52,7 +52,7 @@ class ClientConnection:
             else:
                 print("connection error")
                 time.sleep(3)
-        peer = self.__pysocket__.getpeername()
+        peer = self.__msgsock__.getpeername()
         print("connected to {0} on port {1}".format(peer[0], peer[1]))
         self.__flag_connected__ = True
 
@@ -95,8 +95,8 @@ class ClientConnection:
             raise TypeError("param 'data_list' must be type of 'list'")
         req = dict(id=self.__client_id__, cmd=__CMD_SUBMIT__, data={"artilist": data_list})
         while True:
-            self.__pysocket__.send_msg(json.dumps(req))
-            res = json.loads(self.__pysocket__.recv_msg())
+            self.__msgsock__.send_msg(json.dumps(req))
+            res = json.loads(self.__msgsock__.recv_msg())
             if int(res["status"]) == __CODE_SUBMIT_SUCCESS__:
                 return 0
             elif int(res["status"]) == __CODE_SUBMIT_EXIT__:
@@ -106,6 +106,6 @@ class ClientConnection:
                 time.sleep(3)
 
     def __request__(self, req):
-        self.__pysocket__.send_msg(json.dumps(req))
-        res = json.loads(self.__pysocket__.recv_msg())
+        self.__msgsock__.send_msg(json.dumps(req))
+        res = json.loads(self.__msgsock__.recv_msg())
         return res

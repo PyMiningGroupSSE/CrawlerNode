@@ -14,6 +14,9 @@ class MsgSocket:
     def __del__(self):
         self.__socket__.close()
 
+    def settimeout(self, timeout):
+        return self.__socket__.settimeout(timeout)
+
     def bind(self, address, port):
         return self.__socket__.bind((str(address), int(port)))
 

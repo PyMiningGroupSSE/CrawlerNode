@@ -17,16 +17,17 @@ def main(argv):
         tasks = conn.request_tasks(count=5)
         logging.info("tasks fetch complete, start parsing")
         data_list = list()
-        for url in tasks:
+        for task in tasks:
+            news_type, url = task.split("|")
             host = urlparse(url).netloc
             if host not in __xpath_dict__.keys():
                 __xpath_dict__[host] = conn.request_xpath(host)
-            data_list.append(parse_page(url))
+            data_list.append(parse_page(url, news_type))
             time.sleep(0.5)
         conn.submit_data(data_list)
 
 
-def parse_page(url):
+def parse_page(url, news_type):
     host = urlparse(url).netloc
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36",
@@ -41,7 +42,7 @@ def parse_page(url):
     article = {
         "url": url,
         "title": None,
-        "type": None,
+        "type": news_type,
         "source": None,
         "time": None,
         "keywords": None,
@@ -49,7 +50,6 @@ def parse_page(url):
     }
     if len(selector.xpath(xpath["title"])) != 0:
         article["title"] = str(selector.xpath(xpath["title"])[0])
-        article["type"] = str(selector.xpath(xpath["type"])[0]).split(":")[0]
         article["source"] = str(selector.xpath(xpath["source"])[0])
         article["time"] = str(selector.xpath(xpath["time"])[0])
         article["keywords"] = selector.xpath(xpath["keywords"])
