@@ -65,5 +65,4 @@ def parse_page(url, news_type):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
     main(sys.argv)
