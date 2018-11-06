@@ -36,6 +36,8 @@ def parse_page(url, news_type):
         "Accept-Language": "en,zh-CN;q=0.9,zh;q=0.8"
     }
     r = requests.get(url, headers=headers)
+    if r.status_code != 200:
+        raise ConnectionError("node might be banned")
     r.encoding = "utf-8"
     selector = etree.HTML(r.text)
     xpath = __xpath_dict__[host]
@@ -48,7 +50,7 @@ def parse_page(url, news_type):
         "keywords": None,
         "content": ""
     }
-    if len(selector.xpath(xpath["title"])) != 0:
+    if selector is not None and len(selector.xpath(xpath["title"])) != 0:
         article["title"] = str(selector.xpath(xpath["title"])[0])
         article["source"] = str(selector.xpath(xpath["source"])[0])
         article["time"] = str(selector.xpath(xpath["time"])[0])
