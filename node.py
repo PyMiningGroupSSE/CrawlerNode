@@ -51,9 +51,9 @@ def parse_page(url, news_type):
         "content": ""
     }
     if selector is not None and len(selector.xpath(xpath["title"])) != 0:
-        article["title"] = str(selector.xpath(xpath["title"])[0])
-        article["source"] = str(selector.xpath(xpath["source"])[0])
-        article["time"] = str(selector.xpath(xpath["time"])[0])
+        article["title"] = get_value(selector.xpath(xpath["title"]))
+        article["source"] = get_value(selector.xpath(xpath["source"]))
+        article["time"] = get_value(selector.xpath(xpath["time"]))
         article["keywords"] = selector.xpath(xpath["keywords"])
         content = selector.xpath(xpath["content"])
         for line in content:
@@ -64,6 +64,12 @@ def parse_page(url, news_type):
             article["content"] += line.strip()
         article["content"] = article["content"][1:]
     return article
+
+
+def get_value(selector, index=0):
+    if len(selector) == 0:
+        return None
+    return str(selector[index])
 
 
 if __name__ == '__main__':
