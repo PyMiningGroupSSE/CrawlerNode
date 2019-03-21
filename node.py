@@ -36,7 +36,7 @@ def parse_page(url, news_type):
         "Accept-Language": "en,zh-CN;q=0.9,zh;q=0.8"
     }
     r = requests.get(url, headers=headers)
-    if r.status_code != 200:
+    if r.status_code not in [200, 404]:
         raise ConnectionError("node might be banned")
     r.encoding = "utf-8"
     selector = etree.HTML(r.text)
