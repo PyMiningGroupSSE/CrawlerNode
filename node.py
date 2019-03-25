@@ -62,7 +62,7 @@ def parse_page(url, news_type):
             if line.startswith("\u3000"):
                 article["content"] += "\n"
             article["content"] += line.strip()
-        article["content"] = article["content"][1:]
+        article["content"] = article["content"].strip()
     return article
 
 
